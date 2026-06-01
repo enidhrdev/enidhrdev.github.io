@@ -26,14 +26,14 @@
     }
     body.dark-mode {
       --bg: #121826;
-      --text: #e0e4e8;
-      --text-muted: #94a3b8;
-      --text-heading: #e0e4e8;
-      --border: #2a3a3a;
-      --card-bg: #1e2936;
-      --card-border: #2d3a4a;
-      --section-bg: #1a2332;
-      --navbar-bg: rgba(18,24,38,0.92);
+      --text: #edf2f7;
+      --text-muted: #a8bcc8;
+      --text-heading: #f0f6ff;
+      --border: #2a3a4a;
+      --card-bg: #1a2535;
+      --card-border: #263548;
+      --section-bg: #1a2535;
+      --navbar-bg: rgba(18,24,38,0.96);
     }
 
     body {
@@ -56,13 +56,14 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      padding: 20px 0;
+      padding: 16px 0;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
       z-index: 1000;
       backdrop-filter: blur(10px);
       background-color: var(--navbar-bg);
+      gap: 0;
     }
     .logo {
       font-weight: 700;
@@ -76,10 +77,16 @@
       align-items: center;
       gap: 8px;
       text-decoration: none;
+      order: 1;
     }
     .logo i { font-size: 1.1rem; color: #14B8A6; background: none; -webkit-background-clip: unset; background-clip: unset; }
-    .nav-controls { display: flex; align-items: center; gap: 16px; }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-controls { display: flex; align-items: center; gap: 12px; order: 2; }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      order: 3;
+    }
     .nav-links a {
       text-decoration: none;
       font-weight: 500;
@@ -628,9 +635,28 @@
     @media (max-width: 880px) {
       .navbar { flex-direction: row; }
       .nav-links {
-        display: none; width: 100%; flex-direction: column;
-        background: var(--bg); padding: 20px 0; gap: 18px;
-        margin-top: 18px; border-top: 1px solid var(--border);
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 0;
+        padding: 10px 0 14px;
+        border-top: 1px solid var(--border);
+        order: 10;
+      }
+      .nav-links li { width: 100%; }
+      .nav-links li a {
+        display: block;
+        padding: 11px 4px;
+        font-size: 0.97rem;
+        border-left: 3px solid transparent;
+        transition: all 0.18s;
+      }
+      .nav-links li a:hover {
+        color: var(--teal);
+        border-left-color: var(--teal);
+        padding-left: 10px;
+        background: rgba(20,184,166,0.06);
       }
       .nav-links.active { display: flex; }
       .menu-toggle { display: block; }
@@ -659,7 +685,7 @@
     }
   </style>
 </head>
-<body>
+<body class="dark-mode">
 
 <!-- NAVBAR -->
 <div class="container">
@@ -668,18 +694,18 @@
       <i class="fas fa-ghost"></i> Ghosterx Digital
     </a>
     <div class="nav-controls">
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#produk">Produk</a></li>
-        <li><a href="#keunggulan">Keunggulan</a></li>
-        <li><a href="#cara-order">Cara Order</a></li>
-        <li><a href="#faq">FAQ</a></li>
-        <li><a href="https://shopee.co.id/ghosterx" target="_blank" rel="noopener">Toko Shopee</a></li>
-      </ul>
       <button class="darkmode-toggle" id="darkmodeBtn" title="Toggle dark mode">
-        <i class="fas fa-moon" id="darkmodeIcon"></i>
+        <i class="fas fa-sun" id="darkmodeIcon"></i>
       </button>
       <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
     </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#produk">Produk</a></li>
+      <li><a href="#keunggulan">Keunggulan</a></li>
+      <li><a href="#cara-order">Cara Order</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="https://shopee.co.id/ghosterx" target="_blank" rel="noopener">Toko Shopee</a></li>
+    </ul>
   </nav>
 </div>
 
@@ -1083,17 +1109,18 @@
   const darkmodeBtn = document.getElementById('darkmodeBtn');
   const darkmodeIcon = document.getElementById('darkmodeIcon');
 
-  const saved = localStorage.getItem('ghosterx-theme');
-  if (saved === 'dark') {
-    body.classList.add('dark-mode');
-    darkmodeIcon.className = 'fas fa-sun';
-  }
-
-  darkmodeBtn.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    const isDark = body.classList.contains('dark-mode');
+  function applyDark(isDark) {
+    body.classList.toggle('dark-mode', isDark);
     darkmodeIcon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     localStorage.setItem('ghosterx-theme', isDark ? 'dark' : 'light');
+  }
+
+  // Default dark, restore from localStorage if set
+  const saved = localStorage.getItem('ghosterx-theme');
+  applyDark(saved === null ? true : saved === 'dark');
+
+  darkmodeBtn.addEventListener('click', () => {
+    applyDark(!body.classList.contains('dark-mode'));
   });
 
   // Mobile menu
